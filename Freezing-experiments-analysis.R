@@ -49,6 +49,17 @@ fr %>%
 
 
 # Modeling --------------------------------------------------------------------
+## Testing for the presence of the phylogenetic signal:
+fr_ag <- fr %>% group_by(SampleID) %>%
+  summarise(Survival = sum(Survival)/n()) %>%
+  as.data.frame
+fr_ag <- fr_ag[fr_ag$SampleID %in% phy$tip.label, ] # not all guys are on the tree
+fr_ag_v <- setNames(fr_ag$Survival, fr_ag$SampleID)
+phytools::phylosig(phy, fr_ag_v, method = 'K', test = T)
+phytools::phylosig(phy, fr_ag_v, method = 'lambda', test = T)
+## No phylogenetic signal detected, so we use mixed-effects models
+## assuming uncorrelated errors
+
 ## Model controls:
 modContr <- glmerControl(
   check.conv.singular = .makeCC(action = 'message', tol = 1e-5),
