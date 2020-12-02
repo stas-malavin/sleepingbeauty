@@ -1,5 +1,5 @@
 # sleepingbeauty
-A companion data repository to the paper "A Living Bdelloid Rotifer Recovered from 20,000 Year Old Arctic Permafrost"
+A companion data repository for the paper "A Living Bdelloid Rotifer Recovered from 20,000 Year Old Arctic Permafrost"
 
 **Authors**
 
