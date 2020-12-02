@@ -1,8 +1,10 @@
 # sleepingbeauty
-A companion data repository to the paper "Live Bdelloid Rotifer Is Recovered from Arctic Permafrost over 20,000 Years Old"
+A companion data repository to the paper "A Living Bdelloid Rotifer Recovered from 20,000 Year Old Arctic Permafrost"
+
+**Authors**
+
+Lyubov Shmakova, Stas Malavin, Nataliia Iakovenko, Tatiana Vishnivetskaya, Daniel Shain, Michael Plewka, and Elizaveta Rivkina
 
 **Abstract**
 
-We report the unprecedented long-term survival of a microscopic metazoan, an obligate parthenogenetic bdelloid rotifer in the genus Adineta, from relict East-Siberian permafrost (Yedoma formation), radiocarbon-dated to ~24 thousand years before present. By morphological and molecular markers, this ancient Adineta sp. aligns with contemporary A. vaga complex sp. E JFF-2016 isolate Hprim14, collected in Belgium. We have propagated a live culture from single individual and demonstrate that it is capable of surviving slow freezing.
-
-**To be submitted to Current Biology**
+In natural, permanently frozen habitats, some organisms may be preserved for hundreds to tens of thousands of years. For example, stems of Antarctic moss were successfully regrown from an over millennium-old sample covered by ice for about 400 years. Likewise, whole campion plants were regenerated from seed tissue preserved in relict 32,000 year old permafrost, and nematodes were revived from the permafrost of two localities in northeastern Siberia, with source sediments dated over 30,000 years BP. Bdelloid rotifers, microscopic multicellular animals, are known for their ability to survive extremely low temperatures. Previous reports suggest survival after 6–10 years when frozen between −20° to 0°C. Here, we report the survival of an obligate parthenogenetic bdelloid rotifer, recovered from northeastern Siberian permafrost radiocarbon-dated to ~24,000 years BP. This constitutes the longest reported case of rotifer survival in a frozen state. We confirmed the finding by identifying rotifer actin gene sequences in a metagenome obtained from the same sample. By morphological and molecular markers, the discovered rotifer belongs to the genus Adineta, and aligns with a contemporary Adineta vaga isolate collected in Belgium. Experiments demonstrated that the ancient rotifer withstands slow cooling and freezing (~1°С per minute) for at least 7 days. We also show that a clonal culture can continuously reproduce in the laboratory by parthenogenesis.
