@@ -1,31 +1,34 @@
+# This script assumes all the data in the working directory
 library(magrittr)
-library(readxl)
 library(dplyr)
-library(ggplot2)
 library(lme4)
+# Also requires ggplot2, ape, and phytools
 
 # Read the data:
-Names <- c('SampleID', 'Species', 'Age', 'Continent', 'Region', 'Country',
-          'Plate', 'Individual', 'Survival')
-fr <- read_xlsx('Supplementary File S3.xlsx',
-                sheet = 'Freezing survival data',
-                range = cell_rows(6:553),
-                col_names = Names)
-fr %>% filter(!grepl('PERMAFROST', Species)) %>% nrow # 404 individuals
+fr <- read.table('Freezing-experiments-data-with-metadata.csv',
+                 header = T, sep = ',', skip = 14)[1:4]
+fr.meta <- read.table('Freezing-experiments-data-with-metadata.csv',
+                      header = T, sep = ',', skip = 1, nrows = 11)
+fr %>% filter(grepl('AL3_15', SampleID)) %>% nrow # 144 individuals
+fr %>% filter(!grepl('AL3_15', SampleID)) %>% nrow # 402 individuals
 
 # Find the species with zero survival rate:
-Zsp <- fr %>% group_by(Species) %>% summarize(Surv = sum(Survival)) %>%
-  filter(Surv == 0) %$% Species %>% as.character
+Zsp <- fr %>% group_by(SampleID) %>% summarize(Surv = sum(Survival)) %>%
+  filter(Surv == 0) %$% SampleID %>% as.character
 
 # Leave only the species with a positive survival rate:
-fr %<>% filter(!Species %in% Zsp)
-fr %>% filter(!grepl('PERMAFROST', Species)) %>% nrow # 330 individuals
+fr %<>% filter(!SampleID %in% Zsp)
+fr %>% filter(!grepl('AL3_15', SampleID)) %>% nrow # 318 individuals
 
+# Get Region and Species from the table metadata
+fr %<>%
+  mutate(Region = fr.meta[match(SampleID, fr.meta$SampleID),'Region']) %>% 
+  mutate(Species = fr.meta[match(SampleID, fr.meta$SampleID),'Species'])
+  
 # Median survival rate:
 fr %>%
-  group_by(Age, Plate) %>%
+  group_by(SampleID, Plate) %>%
   summarize(Surv = sum(Survival)/n()*100) %>% 
-  group_by(Age) %>% 
   summarize(
     Median = median(Surv),
     MinSurv = min(Surv),
@@ -35,26 +38,26 @@ fr %>%
   
 # Plotting --------------------------------------------------------------------
 fr %>%
-  mutate(Species = sub('SP1', 'Hprim14', Species)) %>% 
   group_by(Region, Species, Plate) %>%
   summarize(Surv = sum(Survival)/n()*100) %>% 
-  ggplot(aes(Species, Surv, fill = Region)) + geom_boxplot() +
+  ggplot2::ggplot(aes(Species, Surv, fill = Region)) + geom_boxplot() +
   scale_fill_manual(values = c(
-    'arctic' = 'deepskyblue',
-    'temporal' = 'beige')) +
+    'Arctic' = 'deepskyblue',
+    'Temporal' = 'beige')) +
   labs(y = 'Survival rate, %', x = NULL) +
   theme_light() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1,
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12,
                                    color = c(1,1,1,1,1,1,2,1)))
 
 
 # Modeling --------------------------------------------------------------------
 ## Testing for the presence of the phylogenetic signal:
+phy <- ape::read.nexus('Adineta-phylogeny.nxs')
 fr_ag <- fr %>% group_by(SampleID) %>%
-  summarise(Survival = sum(Survival)/n()) %>%
+  summarise(Surv = sum(Survival)/n()) %>%
   as.data.frame
 fr_ag <- fr_ag[fr_ag$SampleID %in% phy$tip.label, ] # not all guys are on the tree
-fr_ag_v <- setNames(fr_ag$Survival, fr_ag$SampleID)
+fr_ag_v <- setNames(fr_ag$Surv, fr_ag$SampleID)
 phytools::phylosig(phy, fr_ag_v, method = 'K', test = T)
 phytools::phylosig(phy, fr_ag_v, method = 'lambda', test = T)
 ## No phylogenetic signal detected, so we use mixed-effects models
@@ -103,16 +106,16 @@ anova(fr.glmer04, fr.glmer03)
 # Pairwise comparisons --------------------------------------------------------
 
 # Diff. in prop. between the contemp. and ancient Arctic species:
-fr %>% filter(Region == 'arctic') %>%
-  group_by(Species) %>% 
+fr %>% filter(Region == 'Arctic') %>%
+  group_by(SampleID) %>% 
   summarise(N = n(), Surv = sum(Survival)) %$% 
-  prop.test(Surv, N, alternative = 'less') # A. glauca has smaller median
-# Xsq = 0.63587; p = 0.2126
+  prop.test(Surv, N)
+# Xsq = 0.63587; p = 0.4252
 
 # Diff. in prop. between the ancient species and the sister contemp. species,
 # A. vaga isolate Hprim14, GenBank KU860644.1:
 fr %>% filter(grepl('Unamur|AL3_15', SampleID)) %>%
-  group_by(Species) %>% 
+  group_by(SampleID) %>% 
   summarise(N = n(), Surv = sum(Survival)) %$% 
-  prop.test(Surv, N, alternative = 'less') # Hprim14 has smaller median
-# Xsq = 2.8572; p = 0.04548
+  prop.test(Surv, N)
+# Xsq = 2.8572; p = 0.09096
