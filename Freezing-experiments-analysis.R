@@ -3,9 +3,7 @@ library(dplyr)
 library(ggplot2)
 library(lme4)
 
-# Read the data:
-Names <- c('SampleID', 'Species', 'Age', 'Continent', 'Region', 'Country',
-          'Plate', 'Individual', 'Survival')
+# Read the data and metadata:
 fr.meta <- read.csv('Freezing-experiments-data-with-metadata.csv',
                     nrows = 11, skip = 1)
 fr <- read.csv('Freezing-experiments-data-with-metadata.csv', skip = 14)[1:4]
