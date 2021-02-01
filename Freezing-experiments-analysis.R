@@ -2,6 +2,7 @@ library(magrittr)
 library(dplyr)
 library(ggplot2)
 library(lme4)
+library(phytools)
 
 # Read the data and metadata:
 fr.meta <- read.csv('Freezing-experiments-data-with-metadata.csv',
@@ -67,8 +68,8 @@ fr_ag <- fr %>% group_by(SampleID) %>%
   as.data.frame
 fr_ag <- fr_ag[fr_ag$SampleID %in% phy$tip.label, ] # not all guys are on the tree
 fr_ag_v <- setNames(fr_ag$Survival, fr_ag$SampleID)
-phytools::phylosig(phy, fr_ag_v, method = 'K', test = T)
-phytools::phylosig(phy, fr_ag_v, method = 'lambda', test = T)
+phylosig(phy, fr_ag_v, method = 'K', test = T)
+phylosig(phy, fr_ag_v, method = 'lambda', test = T)
 ## No phylogenetic signal detected, so we use mixed-effects models
 ## assuming uncorrelated errors
 
