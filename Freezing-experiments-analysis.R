@@ -21,7 +21,7 @@ Zsp <- fr %>% group_by(SampleID) %>% summarize(Surv = sum(Survival)) %>%
 fr %<>% filter(!SampleID %in% Zsp)
 fr %>% filter(!grepl('SCL-15-7', SampleID)) %>% nrow # 318 individuals
 
-# Populate the data table of results with the metadata:
+# Populate the results table with metadata:
 fr$Age <- fr$Region <- fr$Species <- ''
 for (i in 1:nrow(fr)) {
   fr$Region[i] <- fr.meta$Region[match(fr$SampleID[i], fr.meta$SampleID)]
@@ -57,8 +57,16 @@ fr %>%
     'Temporal' = 'beige')) +
   labs(y = 'Survival rate, %', x = NULL) +
   theme_light() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1,
-                                   color = c(1,1,1,1,1,1,2,1)))
+  theme(
+    axis.title.y = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1,
+                               color = c(1,1,1,1,1,1,2,1), size = 12),
+    legend.text = element_text(size = 12),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.y = element_line(linetype = 3, color = 'gray50')
+    )
 
 
 # Modeling --------------------------------------------------------------------
